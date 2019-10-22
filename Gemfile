@@ -9,7 +9,7 @@ gem 'foreman'
 gem 'pg'
 gem 'puma'
 gem 'rake'
-gem 'sinatra', require: 'sinatra/base'
+gem "sinatra", ">= 2.0.2", require: 'sinatra/base'
 gem 'sinatra-activerecord'
 gem 'sinatra-contrib', require: false
 
