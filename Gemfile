@@ -3,6 +3,7 @@ source 'https://rubygems.org'
 ruby '2.4.1'
 
 gem 'activerecord'
+gem 'dotenv'
 gem 'faraday'
 gem 'foreman'
 gem 'pg'
@@ -13,7 +14,6 @@ gem 'sinatra-activerecord'
 gem 'sinatra-contrib', require: false
 
 group :development, :test do
-  gem 'dotenv-rails'
   gem 'pry'
 end
 

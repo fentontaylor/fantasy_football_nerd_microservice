@@ -10,7 +10,7 @@ class App < Sinatra::Base
   get '/projections/:position/:week' do
     pos = params[:position]
     week = params[:week]
-    response = Faraday.get("https://www.fantasyfootballnerd.com/service/weekly-projections/json/ffsqejxq4cax/#{pos}/#{week}")
+    response = Faraday.get("https://www.fantasyfootballnerd.com/service/weekly-projections/json/#{ENV['FF_NERD_KEY']}/#{pos}/#{week}")
     response.body
   end
 
