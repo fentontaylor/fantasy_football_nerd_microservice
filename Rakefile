@@ -1,5 +1,6 @@
 require_relative 'app'
 
+require 'sinatra/activerecord'
 require 'sinatra/activerecord/rake'
 require 'rspec/core/rake_task'
 
@@ -12,5 +13,5 @@ RSpec::Core::RakeTask.new(:spec) do |t|
 end
 
 task :console do
-  exec "irb -r irb/completion -r ./app"
+  exec 'irb -r irb/completion -r ./app'
 end
