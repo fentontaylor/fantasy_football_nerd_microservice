@@ -15,8 +15,8 @@ class App < Sinatra::Base
     pos = params[:position]
     week = params[:week]
 
-    projections = Projection.where(position: pos)
-    binding.pry
+    projections = Projection.where(position: pos, week: week)
+
     if projections.empty?
       path = "/service/weekly-projections/json/#{ENV['FF_NERD_KEY']}/#{pos}/#{week}"
       response = Faraday.get('https://www.fantasyfootballnerd.com' + path)
@@ -24,9 +24,9 @@ class App < Sinatra::Base
       data[:Projections].each do |proj|
         Projection.create(proj)
       end
-      '{ "message": "Projections updated successfully." }'
+      { status: 201, message: 'Projections updated successfully' }.to_json
     else
-      '{ "message": "Those projections already exist." }'
+      { status: 409, message: 'Those projection resources already exist.' }.to_json
     end
   end
 
