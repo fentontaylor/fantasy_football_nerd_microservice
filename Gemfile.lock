@@ -121,6 +121,7 @@ DEPENDENCIES
   rack-test
   rake
   rspec
+  rspec-core
   sinatra (>= 2.0.2)
   sinatra-activerecord
   sinatra-contrib
