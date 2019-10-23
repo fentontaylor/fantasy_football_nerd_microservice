@@ -16,6 +16,7 @@ gem 'sinatra-contrib', require: false
 group :development, :test do
   gem 'pry'
   gem 'tux'
+  gem 'capybara'
 end
 
 group :test do

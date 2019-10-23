@@ -2,6 +2,8 @@ ENV['RACK_ENV'] = 'test'
 abort('DATABASE_URL environment variable is set') if ENV['DATABASE_URL']
 
 require_relative '../app'
+require 'capybara/rspec'
+Capybara.app = Sinatra::Application
 
 module SinatraApp
   def app
