@@ -1,10 +1,11 @@
 require 'spec_helper'
-require('capybara/rspec')
-require('./app')
-Capybara.app = Sinatra::Application
 
-describe 'visiting the endpoint /projections/update/:position/:week' do
+describe 'visiting the endpoint /projections/update/:position/:week', type: :feature do
   it 'should update the database with those records if they do not exist' do
-    visit '/projections/QB/3'
+    Projection.destroy_all
+
+    visit '/projections/update/QB/1'
+    message = '{ "message": "Projections updated successfully." }'
+    expect(page).to have_content(message)
   end
 end
