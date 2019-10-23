@@ -1,10 +1,12 @@
-ENV["RACK_ENV"] = "test"
-abort("DATABASE_URL environment variable is set") if ENV["DATABASE_URL"]
+ENV['RACK_ENV'] = 'test'
+abort('DATABASE_URL environment variable is set') if ENV['DATABASE_URL']
 
 require_relative '../app'
 
 module SinatraApp
-  def app() App end
+  def app
+    App
+  end
 end
 
 RSpec.configure do |config|
@@ -18,7 +20,7 @@ RSpec.configure do |config|
   end
 
   config.run_all_when_everything_filtered = true
-  config.example_status_persistence_file_path = "tmp/rspec_examples.txt"
+  config.example_status_persistence_file_path = 'tmp/rspec_examples.txt'
   config.order = :random
 
   config.include Rack::Test::Methods

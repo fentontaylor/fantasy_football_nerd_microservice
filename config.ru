@@ -1,4 +1,4 @@
-$LOAD_PATH << File.expand_path(File.dirname(__FILE__))
+$LOAD_PATH << __dir__
 
-require_relative "app"
+require_relative 'app'
 run App

@@ -9,12 +9,13 @@ gem 'foreman'
 gem 'pg'
 gem 'puma'
 gem 'rake'
-gem "sinatra", ">= 2.0.2", require: 'sinatra/base'
+gem 'sinatra', '>= 2.0.2', require: 'sinatra/base'
 gem 'sinatra-activerecord'
 gem 'sinatra-contrib', require: false
 
 group :development, :test do
   gem 'pry'
+  gem 'tux'
 end
 
 group :test do
