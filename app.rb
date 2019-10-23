@@ -7,7 +7,7 @@ class App < Sinatra::Base
     pos = params[:position]
     week = params[:week]
     path = "/service/weekly-projections/json/#{ENV['FF_NERD_KEY']}/#{pos}/#{week}"
-    response = Faraday.get("https://www.fantasyfootballnerd.com" + path)
+    response = Faraday.get('https://www.fantasyfootballnerd.com' + path)
     response.body
   end
 
