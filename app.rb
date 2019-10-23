@@ -24,14 +24,14 @@ class App < Sinatra::Base
       data[:Projections].each do |proj|
         Projection.create(proj)
       end
-      { status: 201, message: 'Projections updated successfully' }.to_json
+      content_type :json
+      { status: 200, message: 'Projections updated successfully' }.to_json
     else
-      { status: 409, message: 'Those projection resources already exist.' }.to_json
+      halt 409, {'Content-Type' => 'json'}, { status: 409, message: 'Those projection resources already exist.' }.to_json
     end
   end
 
   not_found do
-    content_type :json
-    { status: 404, message: 'Resource not found.' }.to_json
+    halt 404, {'Content-Type' => 'json'}, { status: 404, message: 'Resource not found.' }.to_json
   end
 end
