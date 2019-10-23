@@ -17,10 +17,10 @@ group :development, :test do
   gem 'pry'
   gem 'tux'
   gem 'capybara'
+  gem 'rspec'
   gem 'rspec-core'
 end
 
 group :test do
   gem 'rack-test'
-  gem 'rspec'
 end
