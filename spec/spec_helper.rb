@@ -3,6 +3,10 @@ abort('DATABASE_URL environment variable is set') if ENV['DATABASE_URL']
 
 require_relative '../app'
 require 'capybara/rspec'
+require 'bundler'
+Bundler.require(:default, :test)
+
+require File.expand_path('../../config/environment.rb', __FILE__)
 Capybara.app = Sinatra::Application
 
 module SinatraApp

@@ -14,11 +14,11 @@ gem 'sinatra-activerecord'
 gem 'sinatra-contrib', require: false
 
 group :development, :test do
-  gem 'pry'
-  gem 'tux'
   gem 'capybara'
+  gem 'pry'
   gem 'rspec'
   gem 'rspec-core'
+  gem 'tux'
 end
 
 group :test do
