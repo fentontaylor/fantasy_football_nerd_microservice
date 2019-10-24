@@ -10,41 +10,39 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_10_23_003836) do
-
+ActiveRecord::Schema.define(version: 20_191_023_003_836) do
   # These are extensions that must be enabled in order to support this database
-  enable_extension "plpgsql"
+  enable_extension 'plpgsql'
 
-  create_table "projections", force: :cascade do |t|
-    t.integer "week"
-    t.integer "playerId"
-    t.string "position"
-    t.decimal "passAtt"
-    t.decimal "passCmp"
-    t.decimal "passYds"
-    t.decimal "passTD"
-    t.decimal "passInt"
-    t.decimal "rushAtt"
-    t.decimal "rushYds"
-    t.decimal "rushTD"
-    t.decimal "fumblesLost"
-    t.decimal "receptions"
-    t.decimal "recYds"
-    t.decimal "recTD"
-    t.decimal "fg"
-    t.decimal "fgAtt"
-    t.decimal "xp"
-    t.decimal "defInt"
-    t.decimal "defFR"
-    t.decimal "defFF"
-    t.decimal "defSack"
-    t.decimal "defTD"
-    t.decimal "defRetTD"
-    t.decimal "defSafety"
-    t.decimal "defPA"
-    t.decimal "defYdsAllowed"
-    t.string "displayName"
-    t.string "team"
+  create_table 'projections', force: :cascade do |t|
+    t.integer 'week'
+    t.integer 'playerId'
+    t.string 'position'
+    t.decimal 'passAtt'
+    t.decimal 'passCmp'
+    t.decimal 'passYds'
+    t.decimal 'passTD'
+    t.decimal 'passInt'
+    t.decimal 'rushAtt'
+    t.decimal 'rushYds'
+    t.decimal 'rushTD'
+    t.decimal 'fumblesLost'
+    t.decimal 'receptions'
+    t.decimal 'recYds'
+    t.decimal 'recTD'
+    t.decimal 'fg'
+    t.decimal 'fgAtt'
+    t.decimal 'xp'
+    t.decimal 'defInt'
+    t.decimal 'defFR'
+    t.decimal 'defFF'
+    t.decimal 'defSack'
+    t.decimal 'defTD'
+    t.decimal 'defRetTD'
+    t.decimal 'defSafety'
+    t.decimal 'defPA'
+    t.decimal 'defYdsAllowed'
+    t.string 'displayName'
+    t.string 'team'
   end
-
 end
