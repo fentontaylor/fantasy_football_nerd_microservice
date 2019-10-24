@@ -1,15 +1,16 @@
-require_relative 'spec_helper'
+require 'spec_helper'
 
-describe 'fantasy nerd spec' do
+describe '/projections/:position/:week', type: :feature do
   it 'should return projections for a position and week' do
     pos = 'QB'
     week = '4'
-    path = "/service/weekly-projections/json/#{ENV['FF_NERD_KEY']}/#{pos}/#{week}"
-    response = Faraday.get('https://www.fantasyfootballnerd.com' + path)
+    get "/projections/#{pos}/#{week}"
 
-    json = JSON.parse(response.body, symbolize_names: true)
+    expect(last_response).to be_successful
+
+    json = JSON.parse(last_response.body, symbolize_names: true)
     data = json[:Projections].first
-    
+
     expect(data).to have_key(:week)
     expect(data).to have_key(:playerId)
     expect(data).to have_key(:position)

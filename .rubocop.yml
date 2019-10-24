@@ -9,3 +9,6 @@ Metrics/LineLength:
 
 Naming/VariableName:
   Enabled: false
+
+Layout/AlignHash:
+  Enabled: false
