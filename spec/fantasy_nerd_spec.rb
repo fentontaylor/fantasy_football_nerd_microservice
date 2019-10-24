@@ -9,7 +9,7 @@ describe 'fantasy nerd spec' do
 
     json = JSON.parse(response.body, symbolize_names: true)
     data = json[:Projections].first
-    
+
     expect(data).to have_key(:week)
     expect(data).to have_key(:playerId)
     expect(data).to have_key(:position)

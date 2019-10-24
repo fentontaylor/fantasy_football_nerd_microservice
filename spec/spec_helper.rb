@@ -4,19 +4,20 @@ abort('DATABASE_URL environment variable is set') if ENV['DATABASE_URL']
 require_relative '../app'
 require 'capybara/rspec'
 require 'bundler'
+
 Bundler.require(:default, :test)
 
 require File.expand_path('../../config/environment.rb', __FILE__)
 
 DatabaseCleaner.strategy = :truncation
 
-Capybara.app = Sinatra::Application
-
 module SinatraApp
   def app
     App
   end
 end
+
+Capybara.app = SinatraApp
 
 RSpec.configure do |config|
   config.before(:all) do
