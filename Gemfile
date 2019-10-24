@@ -15,6 +15,7 @@ gem 'sinatra-contrib', require: false
 
 group :development, :test do
   gem 'capybara'
+  gem 'database_cleaner'
   gem 'pry'
   gem 'rspec'
   gem 'rspec-core'
