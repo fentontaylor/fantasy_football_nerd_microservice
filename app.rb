@@ -3,6 +3,13 @@ require_relative 'config/boot'
 class App < Sinatra::Base
   register Sinatra::Contrib
 
+  helpers do
+    def ff_nerd_root
+      'https://www.fantasyfootballnerd.com' \
+        "/service/weekly-projections/json/#{ENV['FF_NERD_KEY']}"
+    end
+  end
+
   get '/' do
     content_type :json
     { status: 200, message: 'No data at this endpoint.' }
@@ -11,8 +18,7 @@ class App < Sinatra::Base
   get '/projections/:position/:week' do
     pos = params[:position]
     week = params[:week]
-    path = "/service/weekly-projections/json/#{ENV['FF_NERD_KEY']}/#{pos}/#{week}"
-    response = Faraday.get('https://www.fantasyfootballnerd.com' + path)
+    response = Faraday.get(ff_nerd_root + "/#{pos}/#{week}")
     response.body
   end
 
@@ -23,8 +29,7 @@ class App < Sinatra::Base
     projections = Projection.where(position: pos, week: week)
 
     if projections.empty?
-      path = "/service/weekly-projections/json/#{ENV['FF_NERD_KEY']}/#{pos}/#{week}"
-      response = Faraday.get('https://www.fantasyfootballnerd.com' + path)
+      response = Faraday.get(ff_nerd_root + "/#{pos}/#{week}")
       data = JSON.parse(response.body, symbolize_names: true)
       data[:Projections].each do |proj|
         Projection.create(proj)
@@ -42,8 +47,7 @@ class App < Sinatra::Base
 
     positions.each do |pos|
       weeks.each do |wk|
-        path = "/service/weekly-projections/json/#{ENV['FF_NERD_KEY']}/#{pos}/#{wk}"
-        response = Faraday.get('https://www.fantasyfootballnerd.com' + path)
+        response = Faraday.get(ff_nerd_root + "/#{pos}/#{wk}")
         data = JSON.parse(response.body, symbolize_names: true)
 
         break if data[:Projections].empty?
