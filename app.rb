@@ -76,8 +76,10 @@ class App < Sinatra::Base
 
         projections = Projection.where(position: pos, week: wk)
 
-        data[:Projections].each { |proj| Projection.create(proj) } if projections.empty?
-        message[:positions_updated][pos.to_sym][:weeks] << wk
+        if projections.empty?
+          data[:Projections].each { |proj| Projection.create(proj) }
+          message[:positions_updated][pos.to_sym][:weeks] << wk
+        end
       end
     end
     content_type :json
