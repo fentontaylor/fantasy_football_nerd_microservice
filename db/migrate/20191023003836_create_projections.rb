@@ -30,6 +30,8 @@ class CreateProjections < ActiveRecord::Migration[5.2]
       t.decimal :defYdsAllowed
       t.string :displayName
       t.string :team
+
+      t.timestamps
     end
   end
 end
