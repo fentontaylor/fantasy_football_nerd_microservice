@@ -3,6 +3,13 @@ abort('DATABASE_URL environment variable is set') if ENV['DATABASE_URL']
 
 require_relative '../app'
 require 'capybara/rspec'
+require 'bundler'
+Bundler.require(:default, :test)
+
+require File.expand_path('../../config/environment.rb', __FILE__)
+
+DatabaseCleaner.strategy = :truncation
+
 Capybara.app = Sinatra::Application
 
 module SinatraApp
@@ -12,6 +19,14 @@ module SinatraApp
 end
 
 RSpec.configure do |config|
+  config.before(:all) do
+    DatabaseCleaner.clean
+  end
+
+  config.after(:each) do
+    DatabaseCleaner.clean
+  end
+
   config.expect_with :rspec do |expectations|
     expectations.syntax = :expect
   end
@@ -27,6 +42,7 @@ RSpec.configure do |config|
 
   config.include Rack::Test::Methods
   config.include SinatraApp
+  config.include Capybara::DSL
 end
 
 ActiveRecord::Migration.maintain_test_schema!
