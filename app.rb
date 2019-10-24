@@ -8,6 +8,14 @@ class App < Sinatra::Base
       'https://www.fantasyfootballnerd.com' \
         "/service/weekly-projections/json/#{ENV['FF_NERD_KEY']}"
     end
+
+    def parse_json(json)
+      JSON.parse(json, symbolize_names: true)
+    end
+
+    def success_message
+      { status: 200, message: 'Projections updated successfully.' }.to_json
+    end
   end
 
   get '/' do
@@ -30,12 +38,12 @@ class App < Sinatra::Base
 
     if projections.empty?
       response = Faraday.get(ff_nerd_root + "/#{pos}/#{week}")
-      data = JSON.parse(response.body, symbolize_names: true)
+      data = parse_json(response.body)
       data[:Projections].each do |proj|
         Projection.create(proj)
       end
       content_type :json
-      { status: 200, message: 'Projections updated successfully.' }.to_json
+      success_message
     else
       halt 409, { 'Content-Type' => 'json' }, { status: 409, message: 'Those projection resources already exist.' }.to_json
     end
@@ -43,7 +51,21 @@ class App < Sinatra::Base
 
   get '/projections/update_all' do
     positions = %w[QB RB WR TE K DEF]
-    weeks = *(1..17)
+    max = params['max_week'] || 17
+    weeks = *(1..max.to_i)
+
+    message = {
+      status: 200,
+      message: 'Projections updated successfully.',
+      positions_updated: {
+        QB:  { weeks: [] },
+        RB:  { weeks: [] },
+        WR:  { weeks: [] },
+        TE:  { weeks: [] },
+        K:   { weeks: [] },
+        DEF: { weeks: [] }
+      }
+    }
 
     positions.each do |pos|
       weeks.each do |wk|
@@ -54,9 +76,12 @@ class App < Sinatra::Base
 
         projections = Projection.where(position: pos, week: wk)
 
-        data[:Projections].each { |proj| Projection.new(proj) } if projections.empty?
+        data[:Projections].each { |proj| Projection.create(proj) } if projections.empty?
+        message[:positions_updated][pos.to_sym][:weeks] << wk
       end
     end
+    content_type :json
+    message.to_json
   end
 
   not_found do
