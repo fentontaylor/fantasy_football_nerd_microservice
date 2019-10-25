@@ -1,9 +1,10 @@
-require 'spec_helper'
+require 'acceptance_helper'
 
 describe '/projections/:position/:week', type: :feature do
   it 'should return projections for a position and week' do
+    stub_projections('QB', 1)
     pos = 'QB'
-    week = '4'
+    week = '1'
     get "/projections/#{pos}/#{week}"
 
     expect(last_response).to be_successful
