@@ -12,7 +12,7 @@ class Projection < ActiveRecord::Base
   private
 
   def offense_score
-    passYds * 0.04 +
+    (passYds * 0.04 +
       passTD * 4 +
       fumblesLost * -2 +
       passInt * -1 +
@@ -20,19 +20,21 @@ class Projection < ActiveRecord::Base
       rushTD * 6 +
       recYds * 0.1 +
       recTD * 6
+    ).round(2)
   end
 
   def kicker_score
-    (fg * 3.2 + xp).to_f
+    (fg * 3.2 + xp).to_f.round(2)
   end
 
   def defense_score
-    defTD * 6 +
+    (defTD * 6 +
       defFR * 2 +
       defInt * 2 +
       defSack * 1 +
       defSafety * 2 +
-      points_allowed(defPA)
+      points_allowed(defPA.round)
+    ).round(2)
   end
 
   def points_allowed(pts_allowed)
