@@ -24,12 +24,12 @@ describe '/player_projections?players={list_of_ids}', type: :feature do
 
     result = {
       projections: [
-        { ffn_id: 752, projection: 0 },
-        { ffn_id: 1041, projection: 0 },
-        { ffn_id: 1446, projection: 0 },
-        { ffn_id: 2198, projection: 0 },
-        { ffn_id: 2812, projection: 0 },
-        { ffn_id: 3326, projection: 0 }
+        { ffn_id: 752, projection: 9.38 },
+        { ffn_id: 1041, projection: 12.4 },
+        { ffn_id: 1446, projection: 13.4 },
+        { ffn_id: 2198, projection: 11.75 },
+        { ffn_id: 2812, projection: 17.55 },
+        { ffn_id: 3326, projection: 12.79 }
       ]
     }.to_json
 

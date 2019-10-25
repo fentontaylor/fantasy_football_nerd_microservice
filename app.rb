@@ -90,6 +90,7 @@ class App < Sinatra::Base
     player_ids = params['players'].split('-')
     current_week = Projection.maximum(:week)
     my_projections = Projection.where(playerId: player_ids, week: current_week)
+                               .order(:playerId)
 
     message = {
       projections: []
