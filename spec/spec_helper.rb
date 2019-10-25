@@ -4,12 +4,15 @@ abort('DATABASE_URL environment variable is set') if ENV['DATABASE_URL']
 require_relative '../app'
 require 'capybara/rspec'
 require 'bundler'
+require 'webmock/rspec'
 
 Bundler.require(:default, :test)
 
 require File.expand_path('../../config/environment.rb', __FILE__)
 
 DatabaseCleaner.strategy = :truncation
+
+WebMock.disable_net_connect!(allow_localhost: true)
 
 module SinatraApp
   def app

@@ -86,6 +86,24 @@ class App < Sinatra::Base
     message.to_json
   end
 
+  get '/player_projections' do
+    player_ids = params['players'].split('-')
+    current_week = Projection.maximum(:week)
+    my_projections = Projection.where(playerId: player_ids, week: current_week)
+                               .order(:playerId)
+
+    message = {
+      projections: []
+    }
+
+    my_projections.each do |proj|
+      message[:projections] << { ffn_id: proj.playerId, projection: proj.calculate }
+    end
+
+    content_type :json
+    message.to_json
+  end
+
   not_found do
     halt 404, { 'Content-Type' => 'json' }, { status: 404, message: 'Resource not found.' }.to_json
   end
