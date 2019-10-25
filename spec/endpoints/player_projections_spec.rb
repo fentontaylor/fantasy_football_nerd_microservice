@@ -12,6 +12,7 @@ describe '/player_projections?players={list_of_ids}', type: :feature do
     Projection.create(position: 'RB', week: 2, playerId: 3)
     Projection.create(position: 'RB', week: 2, playerId: 4)
 
-    # get '/player_projections?players=1-2-4'
+    get '/player_projections?players=1-2-4'
+
   end
 end
