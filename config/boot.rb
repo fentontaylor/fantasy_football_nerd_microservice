@@ -9,5 +9,6 @@ require 'sinatra/contrib'
 require 'active_support/dependencies'
 
 ActiveSupport::Dependencies.autoload_paths += [
-  File.expand_path('../models', __dir__)
+  File.expand_path('../models', __dir__),
+  File.expand_path('../services', __dir__)
 ]
