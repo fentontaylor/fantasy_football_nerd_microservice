@@ -4,9 +4,13 @@ class App < Sinatra::Base
   register Sinatra::Contrib
 
   helpers do
-    def ff_nerd_root
+    def ff_nerd_root(type)
       'https://www.fantasyfootballnerd.com' \
-        "/service/weekly-projections/json/#{ENV['FF_NERD_KEY']}"
+        "/service/#{type}/json/#{ENV['FF_NERD_KEY']}"
+    end
+
+    def sdio_path
+      "https://api.sportsdata.io/v3/nfl/scores/json/Players?key=#{ENV['SDIO_KEY']}"
     end
 
     def parse_json(json)
@@ -26,7 +30,7 @@ class App < Sinatra::Base
   get '/projections/:position/:week' do
     pos = params[:position]
     week = params[:week]
-    response = Faraday.get(ff_nerd_root + "/#{pos}/#{week}")
+    response = Faraday.get(ff_nerd_root('weekly-projections') + "/#{pos}/#{week}")
     response.body
   end
 
@@ -37,7 +41,7 @@ class App < Sinatra::Base
     projections = Projection.where(position: pos, week: week)
 
     if projections.empty?
-      response = Faraday.get(ff_nerd_root + "/#{pos}/#{week}")
+      response = Faraday.get(ff_nerd_root('weekly-projections') + "/#{pos}/#{week}")
       data = parse_json(response.body)
       data[:Projections].each do |proj|
         Projection.create(proj)
@@ -69,7 +73,7 @@ class App < Sinatra::Base
 
     positions.each do |pos|
       weeks.each do |wk|
-        response = Faraday.get(ff_nerd_root + "/#{pos}/#{wk}")
+        response = Faraday.get(ff_nerd_root('weekly-projections') + "/#{pos}/#{wk}")
         data = JSON.parse(response.body, symbolize_names: true)
 
         break if data[:Projections].empty?
@@ -102,6 +106,23 @@ class App < Sinatra::Base
 
     content_type :json
     message.to_json
+  end
+
+  get '/players' do
+    sdio_response = Faraday.get(sdio_path)
+    ffn_response = Faraday.get(ff_nerd_root('players'))
+    sdio_data = JSON.parse(sdio_response.body)
+    ffn_data = JSON.parse(ffn_response.body)
+
+    # sdio_active = sdio_data.find_all { |player| player['Status'] == 'Active'}
+    ffn_active = ffn_data['Players'].find_all { |player| player['active'] == '1' }
+
+    s_players = sdio_data.map { |player_hash| SdioPlayer.new(player_hash) }
+
+    # ffn_active.map do |player|
+    #   p = s_players.find { |plyr| player.displayName}
+    # end
+    binding.pry
   end
 
   not_found do
