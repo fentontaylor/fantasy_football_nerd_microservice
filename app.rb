@@ -53,8 +53,8 @@ class App < Sinatra::Base
   end
 
   get '/players' do
-    sdio_response = Faraday.get(sdio_path)
-    ffn_response = Faraday.get(ff_nerd_root('players'))
+    sdio_response = Faraday.get(sdio_path('Players'))
+    ffn_response = FFNService.new('players').fetch
     sdio_data = JSON.parse(sdio_response.body)
     ffn_data = JSON.parse(ffn_response.body)
 

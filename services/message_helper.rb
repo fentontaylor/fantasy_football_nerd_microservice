@@ -21,4 +21,8 @@ module MessageHelper
       }
     }
   end
+
+  def sdio_path(path)
+    "https://api.sportsdata.io/v3/nfl/scores/json/#{path}?key=#{ENV['SDIO_KEY']}"
+  end
 end
