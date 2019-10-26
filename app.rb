@@ -113,17 +113,15 @@ class App < Sinatra::Base
     ffn_active.each { |player| name_counts[player['displayName']] += 1 }
     duplicates = name_counts.find_all { |name, count| count > 1 }.map(&:first)
 
-    no_matches = []
     merged_data = ffn_active.map do |player|
       alt_name = player['displayName'].gsub('.', '')
-
       match =
         if duplicates.include? player['displayName']
           s_players.find do |plyr|
-            plyr.name == alt_name && plyr.position == player['position']
+            (plyr.name == alt_name || plyr.alt_name == alt_name) && plyr.position == player['position']
           end
         else
-          s_players.find { |plyr| plyr.name == alt_name }
+          s_players.find { |plyr| plyr.name == alt_name || plyr.alt_name == alt_name }
         end
 
       match = SdioPlayer.new({}) if match.nil?
@@ -136,7 +134,7 @@ class App < Sinatra::Base
       player.delete('dob')
       player
     end
-
+    binding.pry
     content_type :json
     merged_data.to_json
   end
