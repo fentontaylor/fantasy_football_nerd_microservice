@@ -22,16 +22,14 @@ describe '/player_projections?players={list_of_ids}', type: :feature do
 
     get '/player_projections?players=2812-3326-1446-2198-752-1041'
 
-    result = {
-      projections: [
-        { ffn_id: 752, projection: 9.38 },
-        { ffn_id: 1041, projection: 12.4 },
-        { ffn_id: 1446, projection: 13.4 },
-        { ffn_id: 2198, projection: 11.75 },
-        { ffn_id: 2812, projection: 17.55 },
-        { ffn_id: 3326, projection: 12.79 }
-      ]
-    }.to_json
+    result = [
+      { ffn_id: 752, projection: 9.38 },
+      { ffn_id: 1041, projection: 12.4 },
+      { ffn_id: 1446, projection: 13.4 },
+      { ffn_id: 2198, projection: 11.75 },
+      { ffn_id: 2812, projection: 17.55 },
+      { ffn_id: 3326, projection: 12.79 }
+    ].to_json
 
     expect(last_response.body).to eq(result)
   end

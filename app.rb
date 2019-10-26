@@ -25,67 +25,31 @@ class App < Sinatra::Base
     projections = Projection.where(position: pos, week: week)
 
     if projections.empty?
-      service.create_projections(pos, week)
+      service.update_projections(pos, week)
       content_type :json
       success_message('Projections updated successfully.')
     else
-      halt 409, { 'Content-Type' => 'json' }, { status: 409, message: 'Those projection resources already exist.' }.to_json
+      halt(
+        409,
+        { 'Content-Type' => 'json' },
+        { status: 409, message: 'Those projection resources already exist.' }.to_json
+      )
     end
   end
 
   get '/projections/update_all' do
-    positions = %w[QB RB WR TE K DEF]
-    max = params['max_week'] || 17
-    weeks = *(1..max.to_i)
-
-    message = {
-      status: 200,
-      message: 'Projections updated successfully.',
-      positions_updated: {
-        QB:  { weeks: [] },
-        RB:  { weeks: [] },
-        WR:  { weeks: [] },
-        TE:  { weeks: [] },
-        K:   { weeks: [] },
-        DEF: { weeks: [] }
-      }
-    }
-
-    positions.each do |pos|
-      weeks.each do |wk|
-        response = Faraday.get(ff_nerd_root('weekly-projections') + "/#{pos}/#{wk}")
-        data = JSON.parse(response.body, symbolize_names: true)
-
-        break if data[:Projections].empty?
-
-        projections = Projection.where(position: pos, week: wk)
-
-        if projections.empty?
-          data[:Projections].each { |proj| Projection.create(proj) }
-          message[:positions_updated][pos.to_sym][:weeks] << wk
-        end
-      end
-    end
-    content_type :json
-    message.to_json
+    service = FFNService.new('weekly-projections')
+    service.update_all_projections(params['max_week'])
   end
 
   get '/player_projections' do
-    player_ids = params['players'].split('-')
-    current_week = Projection.maximum(:week)
-    my_projections = Projection.where(playerId: player_ids, week: current_week)
-                               .order(:playerId)
+    players = params['players']
+    week = params['week']
+    my_projections = Projection.my_projections(players, week)
 
-    message = {
-      projections: []
-    }
-
-    my_projections.each do |proj|
-      message[:projections] << { ffn_id: proj.playerId, projection: proj.calculate }
-    end
-
-    content_type :json
-    message.to_json
+    my_projections.map do |proj|
+      { ffn_id: proj.playerId, projection: proj.calculate }
+    end.to_json
   end
 
   get '/players' do

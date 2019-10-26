@@ -9,6 +9,13 @@ class Projection < ActiveRecord::Base
     end
   end
 
+  def self.my_projections(ids, week)
+    player_ids = ids.split('-').map(&:to_i)
+    week = week || Projection.maximum(:week)
+    Projection.where(playerId: player_ids, week: week)
+              .order(:playerId)
+  end
+
   private
 
   def offense_score
