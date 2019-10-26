@@ -10,7 +10,7 @@ class SdioPlayer
     @birth_date = hash['BirthDateString']
     @bye_week = hash['ByeWeek']
     @experience = hash['ExperienceString']
-    @name = hash['Name']
+    @name = hash['Name'] ? hash['Name'].gsub('.', '') : nil
     @photo_url = hash['PhotoUrl']
     @position = hash['Position']
   end
