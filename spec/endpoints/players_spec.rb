@@ -3,7 +3,9 @@ require 'acceptance_helper'
 describe '/players', type: :feature do
   context 'by default (without ?inactive=true)' do
     it 'should return json of active players info' do
-      WebMock.allow_net_connect!
+      stub_ffn_players
+      stub_sdio_players
+
       get '/players'
 
       expect(last_response).to be_successful
@@ -22,13 +24,13 @@ describe '/players', type: :feature do
         'college' => 'Oregon State',
         'experience' => '15th Season',
         'birthDate' => 'June 15, 1983',
-        'photoUrl' => 'https =>//s3-us-west-2.amazonaws.com/static.fantasydata.com/headshots/nfl/low-res/12083.png',
-        'byeWeek' => 'NA'
-      }.to_json
+        'photoUrl' => 'https://s3-us-west-2.amazonaws.com/static.fantasydata.com/headshots/nfl/low-res/12083.png',
+        'byeWeek' => nil
+      }
 
       data = JSON.parse(last_response.body)
 
-      expect(data['players'].first).to eq(first_result)
+      expect(data.first).to eq(first_result)
     end
   end
 end

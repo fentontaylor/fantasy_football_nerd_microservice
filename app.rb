@@ -4,15 +4,6 @@ class App < Sinatra::Base
   register Sinatra::Contrib
 
   helpers do
-    def ff_nerd_root(type)
-      'https://www.fantasyfootballnerd.com' \
-        "/service/#{type}/json/#{ENV['FF_NERD_KEY']}"
-    end
-
-    def sdio_path
-      "https://api.sportsdata.io/v3/nfl/scores/json/Players?key=#{ENV['SDIO_KEY']}"
-    end
-
     def parse_json(json)
       JSON.parse(json, symbolize_names: true)
     end
@@ -114,15 +105,40 @@ class App < Sinatra::Base
     sdio_data = JSON.parse(sdio_response.body)
     ffn_data = JSON.parse(ffn_response.body)
 
-    # sdio_active = sdio_data.find_all { |player| player['Status'] == 'Active'}
     ffn_active = ffn_data['Players'].find_all { |player| player['active'] == '1' }
 
     s_players = sdio_data.map { |player_hash| SdioPlayer.new(player_hash) }
 
-    # ffn_active.map do |player|
-    #   p = s_players.find { |plyr| player.displayName}
-    # end
-    binding.pry
+    name_counts = Hash.new(0)
+    ffn_active.each { |player| name_counts[player['displayName']] += 1 }
+    duplicates = name_counts.find_all { |name, count| count > 1 }.map(&:first)
+
+    no_matches = []
+    merged_data = ffn_active.map do |player|
+      alt_name = player['displayName'].gsub('.', '')
+
+      match =
+        if duplicates.include? player['displayName']
+          s_players.find do |plyr|
+            plyr.name == alt_name && plyr.position == player['position']
+          end
+        else
+          s_players.find { |plyr| plyr.name == alt_name }
+        end
+
+      match = SdioPlayer.new({}) if match.nil?
+      player['experience'] = match.experience
+      player['birthDate'] = match.birth_date
+      player['photoUrl'] = match.photo_url
+      player['byeWeek'] = match.bye_week
+      player['ffn_id'] = player['playerId']
+      player.delete('playerId')
+      player.delete('dob')
+      player
+    end
+
+    content_type :json
+    merged_data.to_json
   end
 
   not_found do

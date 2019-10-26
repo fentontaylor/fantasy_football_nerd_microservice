@@ -1,8 +1,17 @@
 require 'spec_helper'
 
+def ff_nerd_root(type)
+  'https://www.fantasyfootballnerd.com' \
+    "/service/#{type}/json/#{ENV['FF_NERD_KEY']}"
+end
+
+def sdio_path
+  "https://api.sportsdata.io/v3/nfl/scores/json/Players?key=#{ENV['SDIO_KEY']}"
+end
+
 def stub_projections(pos, week)
   json = File.open("./spec/fixtures/projections_#{pos.downcase}_#{week}.json")
-  root_url = "https://www.fantasyfootballnerd.com/service/weekly-projections/json/#{ENV['FF_NERD_KEY']}"
+  root_url = ff_nerd_root('weekly-projections')
   stub_request(:get, "#{root_url}/#{pos.upcase}/#{week}")
     .to_return(status: 200, body: json)
 end
@@ -16,4 +25,16 @@ def stub_all_projections_weeks_1_to_3
       stub_projections(pos, week)
     end
   end
+end
+
+def stub_ffn_players
+  ffn_players = File.open('./spec/fixtures/ffn_players.json')
+  stub_request(:get, ff_nerd_root('players'))
+    .to_return(status: 200, body: ffn_players)
+end
+
+def stub_sdio_players
+  sdio_players = File.open('./spec/fixtures/sd_players.json')
+  stub_request(:get, sdio_path)
+    .to_return(status: 200, body: sdio_players)
 end
