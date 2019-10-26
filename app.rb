@@ -1,17 +1,8 @@
 require_relative 'config/boot'
 
 class App < Sinatra::Base
+  include MessageHelper
   register Sinatra::Contrib
-
-  helpers do
-    def parse_json(json)
-      JSON.parse(json, symbolize_names: true)
-    end
-
-    def success_message
-      { status: 200, message: 'Projections updated successfully.' }.to_json
-    end
-  end
 
   get '/' do
     content_type :json
@@ -21,7 +12,8 @@ class App < Sinatra::Base
   get '/projections/:position/:week' do
     pos = params[:position]
     week = params[:week]
-    response = Faraday.get(ff_nerd_root('weekly-projections') + "/#{pos}/#{week}")
+    response = FFNService.new('weekly-projections')
+                         .fetch("/#{pos}/#{week}")
     response.body
   end
 
@@ -29,16 +21,13 @@ class App < Sinatra::Base
     pos = params[:position]
     week = params[:week]
 
+    service = FFNService.new('weekly-projections')
     projections = Projection.where(position: pos, week: week)
 
     if projections.empty?
-      response = Faraday.get(ff_nerd_root('weekly-projections') + "/#{pos}/#{week}")
-      data = parse_json(response.body)
-      data[:Projections].each do |proj|
-        Projection.create(proj)
-      end
+      service.create_projections(pos, week)
       content_type :json
-      success_message
+      success_message('Projections updated successfully.')
     else
       halt 409, { 'Content-Type' => 'json' }, { status: 409, message: 'Those projection resources already exist.' }.to_json
     end
@@ -134,7 +123,7 @@ class App < Sinatra::Base
       player.delete('dob')
       player
     end
-    binding.pry
+
     content_type :json
     merged_data.to_json
   end
