@@ -1,6 +1,6 @@
 class Player
   def initialize(hash)
-    @ffn_id = hash['playerId']
+    @ffn_id = hash['ffn_id']
     @active = hash['active']
     @jersey = hash['jersey']
     @lname = hash['lname']

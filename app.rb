@@ -2,14 +2,16 @@ require_relative 'config/boot'
 
 class App < Sinatra::Base
   include MessageHelper
+  include AuthorizationHelper
   register Sinatra::Contrib
 
   get '/' do
-    content_type :json
-    { status: 200, message: 'No data at this endpoint.' }
+    send_file File.expand_path('index.html', settings.public_folder)
   end
 
   get '/projections/:position/:week' do
+    return invalid_key_message unless valid_open_key?(params[:key])
+
     pos = params[:position]
     week = params[:week]
     response = FFNService.new('weekly-projections')
@@ -18,6 +20,8 @@ class App < Sinatra::Base
   end
 
   get '/projections/update/:position/:week' do
+    return invalid_key_message unless valid_admin_key?(params[:key])
+
     pos = params[:position]
     week = params[:week]
 
@@ -29,20 +33,20 @@ class App < Sinatra::Base
       content_type :json
       success_message('Projections updated successfully.')
     else
-      halt(
-        409,
-        { 'Content-Type' => 'json' },
-        { status: 409, message: 'Those projection resources already exist.' }.to_json
-      )
+      cannot_update_resource_message
     end
   end
 
   get '/projections/update_all' do
+    return invalid_key_message unless valid_admin_key?(params[:key])
+
     service = FFNService.new('weekly-projections')
     service.update_all_projections(params['max_week'])
   end
 
   get '/player_projections' do
+    return invalid_key_message unless valid_admin_key?(params[:key])
+
     players = params['players']
     week = params['week']
     my_projections = Projection.my_projections(players, week)
@@ -53,6 +57,8 @@ class App < Sinatra::Base
   end
 
   get '/players' do
+    return invalid_key_message unless valid_admin_key?(params[:key])
+
     sdio_response = Faraday.get(sdio_path('Players'))
     ffn_response = FFNService.new('players').fetch
     sdio_data = JSON.parse(sdio_response.body)
@@ -93,6 +99,6 @@ class App < Sinatra::Base
   end
 
   not_found do
-    halt 404, { 'Content-Type' => 'json' }, { status: 404, message: 'Resource not found.' }.to_json
+    error_404_message
   end
 end

@@ -38,3 +38,20 @@ def stub_sdio_players
   stub_request(:get, sdio_path)
     .to_return(status: 200, body: sdio_players)
 end
+
+def create_admin_key
+  admin_key = Digest::MD5.hexdigest 'admin_test'
+  register_key(admin_key, 1)
+  admin_key
+end
+
+def create_open_key
+  open_key = Digest::MD5.hexdigest 'open_test'
+  register_key(open_key, 0)
+  open_key
+end
+
+def register_key(key, access_type)
+  key_digest = Digest::MD5.hexdigest key
+  Key.create(value: key_digest, access_type: access_type)
+end
