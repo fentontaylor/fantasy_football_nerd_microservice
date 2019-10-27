@@ -2,6 +2,8 @@ require 'acceptance_helper'
 
 describe '/player_projections?players={list_of_ids}', type: :feature do
   before :each do
+    @key = create_admin_key
+
     stub_projections('QB', 1)
     stub_projections('QB', 2)
     stub_projections('RB', 1)
@@ -11,18 +13,18 @@ describe '/player_projections?players={list_of_ids}', type: :feature do
     stub_projections('K', 2)
     stub_projections('DEF', 2)
 
-    get '/projections/update/QB/1'
-    get '/projections/update/QB/2'
-    get '/projections/update/RB/1'
-    get '/projections/update/RB/2'
-    get '/projections/update/WR/2'
-    get '/projections/update/TE/2'
-    get '/projections/update/K/2'
-    get '/projections/update/DEF/2'
+    get "/projections/update/QB/1?key=#{@key}"
+    get "/projections/update/QB/2?key=#{@key}"
+    get "/projections/update/RB/1?key=#{@key}"
+    get "/projections/update/RB/2?key=#{@key}"
+    get "/projections/update/WR/2?key=#{@key}"
+    get "/projections/update/TE/2?key=#{@key}"
+    get "/projections/update/K/2?key=#{@key}"
+    get "/projections/update/DEF/2?key=#{@key}"
   end
 
   scenario 'returns most recent player projections if no week is specified' do
-    get '/player_projections?players=2812-3326-1446-2198-752-1041'
+    get "/player_projections?players=2812-3326-1446-2198-752-1041&key=#{@key}"
 
     expect(last_response).to be_successful
 
@@ -41,7 +43,7 @@ describe '/player_projections?players={list_of_ids}', type: :feature do
   end
 
   scenario 'returns projections for a specified week if param given' do
-    get '/player_projections?players=2812-3354&week=1'
+    get "/player_projections?players=2812-3354&week=1&key=#{@key}"
 
     expect(last_response).to be_successful
 

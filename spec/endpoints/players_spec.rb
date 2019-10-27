@@ -3,10 +3,11 @@ require 'acceptance_helper'
 describe '/players', type: :feature do
   context 'by default (without ?inactive=true)' do
     it 'should return json of active players info' do
+      key = create_admin_key
       stub_ffn_players
       stub_sdio_players
 
-      get '/players'
+      get "/players?key=#{key}"
 
       expect(last_response).to be_successful
 

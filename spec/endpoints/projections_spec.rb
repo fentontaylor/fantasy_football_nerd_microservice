@@ -3,9 +3,10 @@ require 'acceptance_helper'
 describe '/projections/:position/:week', type: :feature do
   it 'should return projections for a position and week' do
     stub_projections('QB', 1)
+    key = create_admin_key
     pos = 'QB'
     week = '1'
-    get "/projections/#{pos}/#{week}"
+    get "/projections/#{pos}/#{week}?key=#{key}"
 
     expect(last_response).to be_successful
 

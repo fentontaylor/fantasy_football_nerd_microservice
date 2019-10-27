@@ -1,10 +1,14 @@
 require 'acceptance_helper'
 
 describe '/projections/update_all', type: :feature do
+  before :each do
+    @admin_key = create_admin_key
+  end
+
   it 'updates projections for all positions and weeks' do
     stub_all_projections_weeks_1_to_3
 
-    get '/projections/update_all?max_week=3'
+    get "/projections/update_all?max_week=3&key=#{@admin_key}"
 
     expect(last_response).to be_successful
 
@@ -27,11 +31,11 @@ describe '/projections/update_all', type: :feature do
   it 'only updates projections that do not exist in db yet' do
     stub_all_projections_weeks_1_to_3
 
-    get '/projections/update/QB/1'
-    get '/projections/update/QB/2'
-    get '/projections/update/RB/1'
+    get "/projections/update/QB/1?key=#{@admin_key}"
+    get "/projections/update/QB/2?key=#{@admin_key}"
+    get "/projections/update/RB/1?key=#{@admin_key}"
 
-    get '/projections/update_all?max_week=3'
+    get "/projections/update_all?max_week=3&key=#{@admin_key}"
 
     expect(last_response).to be_successful
 
