@@ -51,7 +51,7 @@ describe 'User sends a request to the API' do
       expect(last_response.body).to eq(@error_message)
     end
 
-    scenario 'it sends error message, status 403 if no key is given but is wrong access_type' do
+    scenario 'it sends error message, status 403 if key is given but is wrong access_type' do
       get "/projections/update/WR/1?key=#{@open_key}"
 
       expect(last_response).to_not be_successful
