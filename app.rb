@@ -2,6 +2,7 @@ require_relative 'config/boot'
 
 class App < Sinatra::Base
   include MessageHelper
+  include AuthorizationHelper
   register Sinatra::Contrib
 
   get '/' do
@@ -9,11 +10,17 @@ class App < Sinatra::Base
   end
 
   get '/projections/:position/:week' do
-    pos = params[:position]
-    week = params[:week]
-    response = FFNService.new('weekly-projections')
-                         .fetch("/#{pos}/#{week}")
-    response.body
+    if valid_open_key?(params[:key])
+
+
+      pos = params[:position]
+      week = params[:week]
+      response = FFNService.new('weekly-projections')
+                           .fetch("/#{pos}/#{week}")
+      response.body
+    else
+      halt 403, { 'Content-Type' => 'json' }, { error: 'Invalid API key' }.to_json
+    end
   end
 
   get '/projections/update/:position/:week' do
