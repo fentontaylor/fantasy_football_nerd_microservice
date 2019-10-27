@@ -5,8 +5,7 @@ class App < Sinatra::Base
   register Sinatra::Contrib
 
   get '/' do
-    content_type :json
-    { status: 200, message: 'No data at this endpoint.' }
+    send_file File.expand_path('index.html', settings.public_folder)
   end
 
   get '/projections/:position/:week' do
