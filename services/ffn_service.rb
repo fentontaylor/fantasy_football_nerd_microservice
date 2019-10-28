@@ -40,6 +40,12 @@ class FFNService
     message.to_json
   end
 
+  def my_player_projections(players, week)
+    week = week || Projection.maximum(:week)
+    my_projections = Projection.my_projections(players, week)
+    calculate_projections(my_projections, week)
+  end
+
   def current_projections(max_week)
     max = max_week || 17
     update_all_projections(max)
@@ -47,12 +53,12 @@ class FFNService
     current_week = Projection.maximum(:week)
     most_recent = Projection.where(week: current_week)
                             .order(:playerId)
-    calculate_projections(most_recent)
+    calculate_projections(most_recent, current_week)
   end
 
-  def calculate_projections(data)
+  def calculate_projections(data, week)
     data.map do |proj|
-      { ffn_id: proj.playerId, projection: proj.calculate }
+      { week: week.to_i, ffn_id: proj.playerId, projection: proj.calculate }
     end.to_json
   end
 

@@ -12,6 +12,7 @@ describe '/projections/current', type: :feature do
     expect(last_response).to be_successful
 
     first_element = {
+      week: 3,
       ffn_id: 13,
       projection: 20.24
     }

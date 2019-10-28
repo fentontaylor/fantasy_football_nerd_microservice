@@ -29,12 +29,12 @@ describe '/player_projections?players={list_of_ids}', type: :feature do
     expect(last_response).to be_successful
 
     result = [
-      { ffn_id: 752, projection: 9.38 },
-      { ffn_id: 1041, projection: 12.4 },
-      { ffn_id: 1446, projection: 13.4 },
-      { ffn_id: 2198, projection: 11.75 },
-      { ffn_id: 2812, projection: 17.55 },
-      { ffn_id: 3326, projection: 12.79 }
+      { week: 2, ffn_id: 752, projection: 9.38 },
+      { week: 2, ffn_id: 1041, projection: 12.4 },
+      { week: 2, ffn_id: 1446, projection: 13.4 },
+      { week: 2, ffn_id: 2198, projection: 11.75 },
+      { week: 2, ffn_id: 2812, projection: 17.55 },
+      { week: 2, ffn_id: 3326, projection: 12.79 }
     ]
 
     data = JSON.parse(last_response.body, symbolize_names: true)
@@ -48,8 +48,8 @@ describe '/player_projections?players={list_of_ids}', type: :feature do
     expect(last_response).to be_successful
 
     result = [
-      { ffn_id: 2812, projection: 20.12 },
-      { ffn_id: 3354, projection: 14.27 }
+      { week: 1, ffn_id: 2812, projection: 20.12 },
+      { week: 1, ffn_id: 3354, projection: 14.27 }
     ]
 
     data = JSON.parse(last_response.body, symbolize_names: true)

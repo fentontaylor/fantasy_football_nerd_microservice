@@ -60,10 +60,9 @@ class App < Sinatra::Base
 
     players = params['players']
     week = params['week']
-    my_projections = Projection.my_projections(players, week)
+    service = FFNService.new
     content_type :json
-
-    FFNService.new.calculate_projections(my_projections)
+    service.my_player_projections(players, week)
   end
 
   get '/players' do
