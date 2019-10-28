@@ -58,7 +58,7 @@ class FFNService
 
   def calculate_projections(data, week)
     data.map do |proj|
-      { week: week.to_i, ffn_id: proj.playerId, projection: proj.calculate }
+      { 'week' => week.to_i, 'ffn_id' => proj.playerId, 'projection' => proj.calculate }
     end.to_json
   end
 
