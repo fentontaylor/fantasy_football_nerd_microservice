@@ -16,6 +16,7 @@ class App < Sinatra::Base
     week = params[:week]
     response = FFNService.new('weekly-projections')
                          .fetch("/#{pos}/#{week}")
+    content_type :json
     response.body
   end
 
@@ -28,9 +29,10 @@ class App < Sinatra::Base
     service = FFNService.new('weekly-projections')
     projections = Projection.where(position: pos, week: week)
 
+    content_type :json
+
     if projections.empty?
       service.update_projections(pos, week)
-      content_type :json
       success_message('Projections updated successfully.')
     else
       cannot_update_resource_message
@@ -41,7 +43,16 @@ class App < Sinatra::Base
     return invalid_key_message unless valid_admin_key?(params[:key])
 
     service = FFNService.new('weekly-projections')
-    service.update_all_projections(params['max_week'])
+    content_type :json
+    service.update_all_projections(params[:max_week])
+  end
+
+  get '/projections/current' do
+    return invalid_key_message unless valid_admin_key?(params[:key])
+
+    service = FFNService.new('weekly-projections')
+    content_type :json
+    service.current_projections(params[:max_week])
   end
 
   get '/player_projections' do
@@ -50,10 +61,9 @@ class App < Sinatra::Base
     players = params['players']
     week = params['week']
     my_projections = Projection.my_projections(players, week)
+    content_type :json
 
-    my_projections.map do |proj|
-      { ffn_id: proj.playerId, projection: proj.calculate }
-    end.to_json
+    FFNService.new.calculate_projections(my_projections)
   end
 
   get '/players' do

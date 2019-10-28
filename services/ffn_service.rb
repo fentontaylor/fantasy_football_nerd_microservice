@@ -1,7 +1,7 @@
 class FFNService
   include MessageHelper
 
-  def initialize(service)
+  def initialize(service = nil)
     @service = service
   end
 
@@ -38,6 +38,22 @@ class FFNService
       end
     end
     message.to_json
+  end
+
+  def current_projections(max_week)
+    max = max_week || 17
+    update_all_projections(max)
+
+    current_week = Projection.maximum(:week)
+    most_recent = Projection.where(week: current_week)
+                            .order(:playerId)
+    calculate_projections(most_recent)
+  end
+
+  def calculate_projections(data)
+    data.map do |proj|
+      { ffn_id: proj.playerId, projection: proj.calculate }
+    end.to_json
   end
 
   private
