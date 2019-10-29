@@ -40,6 +40,24 @@ class FFNService
     message.to_json
   end
 
+  def all_players
+    s_players = sdio_data.map { |player_hash| SdioPlayer.new(player_hash) }
+
+    merged_data = ffn_active_players.map do |player|
+      match = find_match(player, s_players, ffn_active_players) || SdioPlayer.new({})
+
+      player['experience'] = match.experience
+      player['birthDate'] = match.birth_date
+      player['photoUrl'] = match.photo_url
+      player['byeWeek'] = match.bye_week
+      player['ffn_id'] = player['playerId']
+      player.delete('playerId')
+      player.delete('dob')
+      player
+    end
+    merged_data.to_json
+  end
+
   def my_player_projections(players, week)
     week = week || Projection.maximum(:week)
     my_projections = Projection.my_projections(players, week)
@@ -56,8 +74,9 @@ class FFNService
     calculate_projections(most_recent, current_week)
   end
 
-  def current_injuries
-    response = fetch('')
+  def current_injuries(week = nil)
+    week = "/#{week}" || ''
+    response = fetch(week)
     data = parse_json(response.body)
     data[:Injuries].map { |k,v| v }
                    .flatten
@@ -81,5 +100,37 @@ class FFNService
 
   def create_projections(data)
     data.each { |proj| Projection.create(proj) }
+  end
+
+  def sdio_data
+    data = Faraday.get(sdio_path('Players')).body
+    parse_json(data, false)
+  end
+
+  def ffn_active_players
+    return @ffn_active_players if @ffn_active_players
+
+    ffn_data = JSON.parse(fetch.body)
+    @ffn_active_players = ffn_data['Players'].find_all { |player| player['active'] == '1' }
+  end
+
+  def duplicate_names(data)
+    return @duplicate_names if @duplicate_names
+
+    name_counts = Hash.new(0)
+    data.each { |player| name_counts[player['displayName']] += 1 }
+    @duplicate_names = name_counts.find_all { |name, count| count > 1 }.map(&:first)
+  end
+
+  def find_match(player, objects, hash)
+    alt_name = player['displayName'].gsub('.', '').downcase
+
+    if duplicate_names(hash).include? player['displayName']
+      objects.find do |plyr|
+        (plyr.name == alt_name || plyr.alt_name == alt_name) && plyr.position == player['position']
+      end
+    else
+      objects.find { |plyr| plyr.name == alt_name || plyr.alt_name == alt_name }
+    end
   end
 end

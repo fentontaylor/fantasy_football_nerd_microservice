@@ -5,8 +5,8 @@ def ff_nerd_root(type)
     "/service/#{type}/json/#{ENV['FF_NERD_KEY']}"
 end
 
-def sdio_path
-  "https://api.sportsdata.io/v3/nfl/scores/json/Players?key=#{ENV['SDIO_KEY']}"
+def sdio_path(type)
+  "https://api.sportsdata.io/v3/nfl/scores/json/#{type}?key=#{ENV['SDIO_KEY']}"
 end
 
 def stub_projections(pos, week)
@@ -27,6 +27,13 @@ def stub_all_projections_weeks_1_to_3
   end
 end
 
+def stub_injuries_week_8
+  json = File.open("./spec/fixtures/injuries_week_8.json")
+  root_url = ff_nerd_root('injuries')
+  stub_request(:get, "#{root_url}/8")
+    .to_return(status: 200, body: json)
+end
+
 def stub_ffn_players
   ffn_players = File.open('./spec/fixtures/ffn_players.json')
   stub_request(:get, ff_nerd_root('players'))
@@ -35,8 +42,14 @@ end
 
 def stub_sdio_players
   sdio_players = File.open('./spec/fixtures/sd_players.json')
-  stub_request(:get, sdio_path)
+  stub_request(:get, sdio_path('Players'))
     .to_return(status: 200, body: sdio_players)
+end
+
+def stub_team_logos
+  logos = File.open('./spec/fixtures/team_logos.json')
+  stub_request(:get, sdio_path('Teams'))
+    .to_return(status: 200, body: logos)
 end
 
 def create_admin_key
