@@ -81,6 +81,14 @@ class App < Sinatra::Base
     service.all_players
   end
 
+  get '/team_logos' do
+    return invalid_key_message unless valid_open_key?(params[:key])
+
+    service = SDIOService.new('Teams')
+    content_type :json
+    service.team_logos
+  end
+
   not_found do
     error_404_message
   end
