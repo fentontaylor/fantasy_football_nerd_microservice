@@ -70,7 +70,7 @@ class App < Sinatra::Base
 
     service = FFNService.new('injuries')
     content_type :json
-    service.current_injuries
+    service.current_injuries(params[:week])
   end
 
   get '/players' do
