@@ -74,8 +74,9 @@ class FFNService
     calculate_projections(most_recent, current_week)
   end
 
-  def current_injuries
-    response = fetch('')
+  def current_injuries(week = nil)
+    week = "/#{week}" || ''
+    response = fetch(week)
     data = parse_json(response.body)
     data[:Injuries].map { |k,v| v }
                    .flatten
@@ -115,14 +116,14 @@ class FFNService
 
   def duplicate_names(data)
     return @duplicate_names if @duplicate_names
-    
+
     name_counts = Hash.new(0)
     data.each { |player| name_counts[player['displayName']] += 1 }
     @duplicate_names = name_counts.find_all { |name, count| count > 1 }.map(&:first)
   end
 
   def find_match(player, objects, hash)
-    alt_name = player['displayName'].gsub('.', '')
+    alt_name = player['displayName'].gsub('.', '').downcase
 
     if duplicate_names(hash).include? player['displayName']
       objects.find do |plyr|

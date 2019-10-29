@@ -11,8 +11,8 @@ class SdioPlayer
     @birth_date = hash['BirthDateString']
     @bye_week = hash['ByeWeek']
     @experience = hash['ExperienceString']
-    @name = hash['YahooName'] ? hash['YahooName'].gsub('.', '') : nil
-    @alt_name = hash['Name'] ? hash['Name'].gsub('.', '') : nil
+    @name = hash['YahooName'] ? hash['YahooName'].gsub('.', '').downcase : nil
+    @alt_name = hash['Name'] ? hash['Name'].gsub('.', '').downcase : nil
     @photo_url = hash['PhotoUrl']
     @position = hash['Position']
   end
