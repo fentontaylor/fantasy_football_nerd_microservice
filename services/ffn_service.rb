@@ -62,7 +62,7 @@ class FFNService
     data[:Injuries].map { |k,v| v }
                    .flatten
                    .reject { |plyr| plyr[:playerId] == '0' }
-                   .sort_by { |plyr| plyr[:playerId] }
+                   .sort_by { |plyr| plyr[:playerId].to_i }
                    .to_json
   end
 
