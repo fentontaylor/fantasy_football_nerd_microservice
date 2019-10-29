@@ -10,6 +10,8 @@ describe '/team_logos', type: :feature do
     expect(last_response).to be_successful
 
     expected = {
+      'city' => 'Arizona',
+      'name' => 'Cardinals',
       'team' => 'ARI',
       'team_logo' => 'https://upload.wikimedia.org/wikipedia/en/7/72/Arizona_Cardinals_logo.svg'
     }

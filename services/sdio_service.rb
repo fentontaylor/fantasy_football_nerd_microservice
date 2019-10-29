@@ -16,7 +16,12 @@ class SDIOService
 
   def extract_logos(data)
     data.map do |team|
-      { team: team[:Key], team_logo: team[:WikipediaLogoUrl] }
+      {
+        team: team[:Key],
+        team_logo: team[:WikipediaLogoUrl],
+        city: team[:City],
+        name: team[:Name]
+      }
     end
   end
 end
