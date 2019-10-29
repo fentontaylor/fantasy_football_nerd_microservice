@@ -1,6 +1,6 @@
 module MessageHelper
-  def parse_json(json)
-    JSON.parse(json, symbolize_names: true)
+  def parse_json(json, symbolize = true)
+    JSON.parse(json, symbolize_names: symbolize)
   end
 
   def success_message(message)
