@@ -56,6 +56,16 @@ class FFNService
     calculate_projections(most_recent, current_week)
   end
 
+  def current_injuries
+    response = fetch('')
+    data = parse_json(response.body)
+    data[:Injuries].map { |k,v| v }
+                   .flatten
+                   .reject { |plyr| plyr[:playerId] == '0' }
+                   .sort_by { |plyr| plyr[:playerId] }
+                   .to_json
+  end
+
   def calculate_projections(data, week)
     data.map do |proj|
       { 'week' => week.to_i, 'ffn_id' => proj.playerId, 'projection' => proj.calculate }
