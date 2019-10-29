@@ -27,6 +27,13 @@ def stub_all_projections_weeks_1_to_3
   end
 end
 
+def stub_injuries_week_8
+  json = File.open("./spec/fixtures/injuries_week_8.json")
+  root_url = ff_nerd_root('injuries')
+  stub_request(:get, "#{root_url}/8")
+    .to_return(status: 200, body: json)
+end
+
 def stub_ffn_players
   ffn_players = File.open('./spec/fixtures/ffn_players.json')
   stub_request(:get, ff_nerd_root('players'))

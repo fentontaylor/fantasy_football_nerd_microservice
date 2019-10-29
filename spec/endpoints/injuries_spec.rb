@@ -2,11 +2,10 @@ require 'acceptance_helper'
 
 describe '/injuries', type: :feature do
   it 'returns players who are currently injured, including the status' do
-    WebMock.allow_net_connect!
-
+    stub_injuries_week_8
     key = create_admin_key
 
-    get "/injuries?key=#{key}"
+    get "/injuries?key=#{key}&week=8"
 
     expect(last_response).to be_successful
 
