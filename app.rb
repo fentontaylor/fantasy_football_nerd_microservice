@@ -65,6 +65,15 @@ class App < Sinatra::Base
     service.my_player_projections(players, week)
   end
 
+  get '/all_player_projections/:id' do
+    return invalid_key_message unless valid_admin_key?(params[:key])
+    
+    id = params[:id].to_i
+    service = FFNService.new
+    content_type :json
+    service.all_player_projections(id)
+  end
+
   get '/injuries' do
     return invalid_key_message unless valid_open_key?(params[:key])
 
